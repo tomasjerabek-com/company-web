@@ -108,7 +108,7 @@ my-email::after {
   }
 
 .footer {
-    position: fixed;
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
