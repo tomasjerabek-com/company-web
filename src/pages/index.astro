@@ -186,15 +186,20 @@ const technologies = [
             <!-- Email -->
             <div class="group">
               <p class="text-sm text-gray-600 uppercase tracking-wide mb-3 font-bold">Email</p>
-                <a 
-                  id="email" 
-                  href="" 
-                  class="inline-flex items-center text-lg text-gray-900 transition-all duration-300 font-bold group-hover:translate-x-1"
-                >
-                  <svg class="w-6 h-6 mr-3 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-              </a>
+                    <a 
+                      id="email" 
+                      href="" 
+                      class="inline-flex items-center text-lg text-gray-900 transition-all duration-300 font-bold group-hover:translate-x-1"
+                      data-email="bWFpbHRvOnRvbWFzQHRvbWFzamVyYWJlay5jb20="
+                      data-user="tomas"
+                      data-domain="tomasjerabek.com"
+                    >
+                      <svg class="w-6 h-6 mr-3 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                      </svg>
+                      <span class="email-text" style="unicode-bidi: bidi-override; direction: rtl; display: none;">moc.kerabrejsamot@samot</span>
+                      <span class="email-placeholder">[Email protected]</span>
+                    </a>
             </div>
             
             <!-- Phone -->
@@ -350,16 +355,55 @@ const technologies = [
   </style>
 
   <script>
-    // Email obfuscation
-    const parts = ["tomasjerabek", "tomas", "com", "@", "."];
-    const address = parts[1] + parts[3] + parts[0] + parts[4] + parts[2];
-    const emailElement = document.getElementById("email");
-    if (emailElement) {
-      // Create a text node for the email address
-      const emailText = document.createTextNode(address);
-      emailElement.appendChild(emailText);
-      emailElement.href = "mailto:" + address;
-    }
+    // Advanced email obfuscation using multiple techniques
+    (function() {
+      const emailElement = document.getElementById("email");
+      if (!emailElement) return;
+      
+      // Method 1: Try base64 decode from data-email
+      const encoded = emailElement.getAttribute("data-email");
+      if (encoded) {
+        try {
+          const decoded = atob(encoded);
+          emailElement.href = decoded;
+          const email = decoded.replace("mailto:", "");
+          const placeholder = emailElement.querySelector(".email-placeholder");
+          if (placeholder) {
+            placeholder.textContent = email;
+            placeholder.style.display = "inline";
+          }
+          return;
+        } catch (e) {
+          // Fallback to method 2
+        }
+      }
+      
+      // Method 2: Reconstruct from data attributes
+      const user = emailElement.getAttribute("data-user");
+      const domain = emailElement.getAttribute("data-domain");
+      if (user && domain) {
+        const email = user + "@" + domain;
+        emailElement.href = "mailto:" + email;
+        const placeholder = emailElement.querySelector(".email-placeholder");
+        if (placeholder) {
+          placeholder.textContent = email;
+          placeholder.style.display = "inline";
+        }
+        return;
+      }
+      
+      // Method 3: Reverse the reversed text
+      const reversed = emailElement.querySelector(".email-text")?.textContent || "";
+      if (reversed) {
+        const normal = reversed.split("").reverse().join("");
+        emailElement.href = "mailto:" + normal;
+        const placeholder = emailElement.querySelector(".email-placeholder");
+        if (placeholder) {
+          placeholder.textContent = normal;
+          placeholder.style.display = "inline";
+        }
+      }
+    })();
 
     // Scroll down arrow functionality
     const scrollDown = document.getElementById("scroll-down");
