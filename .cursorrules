@@ -1,0 +1,32 @@
+# CRITICAL RULES - READ BEFORE ANY ACTION
+
+## Rule 1: Never Delete Local Artifacts
+- NEVER manually delete or modify node_modules, dist/, .astro/, or any other local build artifacts
+- NEVER run commands like `rm -rf node_modules` or `git rm -rf` on local artifacts
+- Build processes (like `npm run build`) are allowed to recreate dist/ - that's their purpose
+- The rule is about NOT manually interfering with your local workspace
+
+## Rule 2: GitHub Pages Deployment Process
+When deploying to GitHub Pages, follow these EXACT steps:
+
+1. **On main branch**: Run `npm run build` to generate fresh files in `/dist`
+2. **Verify build**: Check that dist/index.html contains the expected changes
+3. **Switch to gh-pages**: `git checkout gh-pages` (or create if doesn't exist)
+4. **Copy dist contents**: `cp -r dist/* .` (copy all files from dist to root)
+5. **Clean up**: `rm -rf dist` (remove the dist folder from gh-pages, not from main!)
+6. **Add .nojekyll**: `touch .nojekyll` (required for GitHub Pages)
+7. **Commit and push**: `git add -A && git commit -m "Deploy: [description]" && git push origin gh-pages`
+8. **Return to main**: `git checkout main`
+
+## Rule 3: Protect Local Environment During Deployment
+- ALWAYS run `npm run build` on the main branch (where node_modules exists)
+- NEVER switch branches without stashing or committing local changes first
+- NEVER delete node_modules from the local workspace (only from gh-pages if it accidentally gets added)
+- ALWAYS verify the local environment is intact after deployment operations
+- If node_modules is missing after operations, run `npm install` immediately
+
+## Rule 4: Verification Steps
+Before considering deployment complete:
+- Verify dist/index.html contains the expected changes
+- Verify gh-pages branch index.html matches dist/index.html
+- Verify local node_modules still exists and works (`npm run dev` should work)
